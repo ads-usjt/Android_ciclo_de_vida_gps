@@ -10,11 +10,17 @@ import android.content.pm.PackageManager;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private TextView locationTextView;
+    private double latitudeAtual;
+    private double longitudeAtual;
     private static final int GPS_REQUEST_PERMISSION_CODE = 1001;
 
     @Override
@@ -23,8 +29,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        locationListener = location -> {
+        locationTextView = findViewById(R.id.locationTextView);
 
+        locationListener = location -> {
+            double lat = location.getLatitude();
+            double lon = location.getLongitude();
+            latitudeAtual = lat;
+            longitudeAtual = lon;
+            locationTextView.setText(
+                    String.format(new Locale("pt-BR"),"Lat: %f, Long: %f", lat, lon)
+            );
         };
     }
 
@@ -70,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     );
                 }
             } else {
-                Toast.makeText(this, "Por favor de permissão de acesso de GPS ao APP", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.no_gps_no_app, Toast.LENGTH_SHORT).show();
             }
         }
     }
